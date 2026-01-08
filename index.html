@@ -148,6 +148,63 @@
             border: 1px solid rgba(255, 107, 107, 0.3);
         }
         
+        .channel-selector {
+            margin-bottom: 25px;
+        }
+        
+        .channel-title {
+            font-size: 1.1em;
+            color: #4ecdc4;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        
+        .channels {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .channel-btn {
+            padding: 8px 12px;
+            background: rgba(255,255,255,0.1);
+            border: 2px solid rgba(78, 205, 196, 0.3);
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.85em;
+            font-weight: bold;
+            min-width: 80px;
+            text-align: center;
+        }
+        
+        .channel-btn:hover {
+            background: rgba(78, 205, 196, 0.2);
+            border-color: rgba(78, 205, 196, 0.6);
+        }
+        
+        .channel-btn.active {
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+            border-color: #4ecdc4;
+            box-shadow: 0 4px 15px rgba(78, 205, 196, 0.4);
+        }
+        
+        .current-channel {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #4ecdc4;
+            margin-bottom: 8px;
+        }
+        
+        .channel-genre {
+            font-size: 1em;
+            opacity: 0.8;
+            margin-bottom: 25px;
+            color: #ff6b6b;
+        }
+        
         .live-dot {
             width: 12px;
             height: 12px;
@@ -317,6 +374,21 @@
                 <span>CANLI YAYIN</span>
             </div>
             
+            <!-- Radyo Kanalları Seçimi -->
+            <div class="channel-selector">
+                <div class="channel-title">📻 Radyo Kanalları</div>
+                <div class="channels" id="channelList">
+                    <!-- Kanallar buraya eklenecek -->
+                </div>
+            </div>
+            
+            <div class="current-channel" id="currentChannel">
+                🎵 Ezgi Arabesk
+            </div>
+            <div class="channel-genre" id="channelGenre">
+                Arabesk & Türk Sanat Müziği
+            </div>
+            
             <div class="controls">
                 <button class="btn btn-listen" id="listenBtn">🎧 DİNLE</button>
                 <button class="btn btn-stop" id="stopBtn" disabled>⏹ DURDUR</button>
@@ -329,7 +401,7 @@
             </div>
             
             <div class="status" id="status">
-                🎧 Canlı radyo dinlemek için DİNLE butonuna tıkla
+                🎧 Radyo kanalı seç ve dinlemeye başla
             </div>
         </div>
         
@@ -349,19 +421,76 @@
         const statusEl = document.getElementById('status');
         const volumeSlider = document.getElementById('volumeSlider');
         const volumeValue = document.getElementById('volumeValue');
+        const channelListEl = document.getElementById('channelList');
+        const currentChannelEl = document.getElementById('currentChannel');
+        const channelGenreEl = document.getElementById('channelGenre');
         
-        // Online radyo istasyonları - dünya çapında erişilebilir
-        const radioStations = [
-            'https://stream.zeno.fm/your-station-id', // Zeno.FM
-            'https://listen.radioking.com/radio/your-radio-id/stream', // RadioKing
-            'https://streaming.radio.co/your-station/listen', // Radio.co
-            // Geçici test için açık radyolar
-            'https://stream.rcast.net/70643', // Chill Music
-            'https://stream.rcast.net/70644', // Pop Music
-            'https://stream.rcast.net/70645'  // Electronic
+        // Kanal listesini oluştur
+        function createChannelList() {
+            channelListEl.innerHTML = '';
+            ezgiChannels.forEach((channel, index) => {
+                const channelBtn = document.createElement('div');
+                channelBtn.className = 'channel-btn';
+                channelBtn.textContent = channel.name;
+                channelBtn.onclick = () => selectChannel(index);
+                
+                if (index === currentChannelIndex) {
+                    channelBtn.classList.add('active');
+                }
+                
+                channelListEl.appendChild(channelBtn);
+            });
+        }
+        
+        // Kanal seç
+        function selectChannel(index) {
+            currentChannelIndex = index;
+            updateCurrentChannel();
+            createChannelList(); // Aktif kanalı güncelle
+            
+            if (isPlaying) {
+                // Eğer çalıyorsa yeni kanalı başlat
+                playRadio();
+            }
+        }
+        
+        // Mevcut kanalı güncelle
+        function updateCurrentChannel() {
+            const channel = ezgiChannels[currentChannelIndex];
+            currentChannelEl.textContent = `🎵 ${channel.name}`;
+            channelGenreEl.textContent = channel.genre;
+        }
+        
+        // Ezgi FM Radyo Kanalları
+        const ezgiChannels = [
+            {
+                name: "Ezgi Arabesk",
+                url: "http://yayin.arabeskfm.com.tr:4444/;stream.mp3",
+                genre: "Arabesk & Türk Sanat Müziği"
+            },
+            {
+                name: "Ezgi Çağlar",
+                url: "http://radyocaglar.canliyayin.org:7050/;stream.mp3",
+                genre: "Karışık Türk Müziği"
+            },
+            {
+                name: "Ezgi Güneş",
+                url: "http://yayin.gunes.fm:8020/;stream.mp3", 
+                genre: "Pop & Güncel Müzik"
+            },
+            {
+                name: "Ezgi Pop",
+                url: "http://46.20.3.204/;stream.mp3",
+                genre: "Türkçe & Yabancı Pop Müzik"
+            },
+            {
+                name: "Ezgi Alaturka",
+                url: "http://yayin.alaturka.com.tr:8020/;stream.mp3",
+                genre: "Klasik Türk Müziği & Halk Müziği"
+            }
         ];
         
-        let currentStationIndex = 0;
+        let currentChannelIndex = 0;
         
         // Ses seviyesi ayarla
         volumeSlider.addEventListener('input', () => {
@@ -385,19 +514,19 @@
         
         function playRadio() {
             try {
-                const radioUrl = radioStations[currentStationIndex];
-                audio.src = radioUrl;
+                const currentChannel = ezgiChannels[currentChannelIndex];
+                audio.src = currentChannel.url;
                 
-                statusEl.textContent = '🔄 Ezgi FM\'e bağlanıyor...';
+                statusEl.textContent = `🔄 ${currentChannel.name}'a bağlanıyor...`;
                 listenBtn.disabled = true;
                 
                 audio.addEventListener('loadstart', () => {
-                    statusEl.textContent = '📡 Canlı yayına bağlanıyor...';
+                    statusEl.textContent = `📡 ${currentChannel.name} yükleniyor...`;
                 });
                 
                 audio.addEventListener('canplay', () => {
                     audio.play();
-                    statusEl.textContent = '🎵 Ezgi FM canlı yayın! 📻';
+                    statusEl.textContent = `🎵 ${currentChannel.name} dinliyorsun! 📻`;
                     isPlaying = true;
                     listenBtn.disabled = true;
                     stopBtn.disabled = false;
@@ -406,15 +535,8 @@
                 
                 audio.addEventListener('error', (e) => {
                     console.log('Radio error:', e);
-                    // Hata durumunda sonraki istasyonu dene
-                    currentStationIndex = (currentStationIndex + 1) % radioStations.length;
-                    if (currentStationIndex === 0) {
-                        statusEl.textContent = '❌ Radyo şu anda yayında değil - Daha sonra tekrar dene';
-                        resetButtons();
-                    } else {
-                        statusEl.textContent = '🔄 Alternatif yayına bağlanıyor...';
-                        setTimeout(() => playRadio(), 2000);
-                    }
+                    statusEl.textContent = `❌ ${currentChannel.name} şu anda erişilemiyor`;
+                    resetButtons();
                 });
                 
                 audio.addEventListener('waiting', () => {
@@ -422,7 +544,7 @@
                 });
                 
                 audio.addEventListener('playing', () => {
-                    statusEl.textContent = '🎵 Ezgi FM canlı yayın! 📻';
+                    statusEl.textContent = `🎵 ${currentChannel.name} canlı yayın! 📻`;
                 });
                 
                 // Bağlantı kopması durumu
@@ -473,7 +595,9 @@
         
         // Sayfa yüklendiğinde
         document.addEventListener('DOMContentLoaded', () => {
-            statusEl.textContent = '🎧 Ezgi FM canlı radyo - DİNLE butonuna tıkla';
+            createChannelList();
+            updateCurrentChannel();
+            statusEl.textContent = '🎧 Radyo kanalı seç ve dinlemeye başla';
         });
         
         // Online radyo istasyonu oluşturma rehberi
