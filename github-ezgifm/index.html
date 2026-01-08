@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎵 Ezgi FM - Bedava Radyo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+        }
+        
+        .logo {
+            font-size: 4em;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .title {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #4ecdc4, #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .subtitle {
+            font-size: 1.2em;
+            margin-bottom: 40px;
+            opacity: 0.8;
+        }
+        
+        .player-card {
+            background: rgba(255,255,255,0.1);
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .current-song {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #4ecdc4;
+            margin-bottom: 15px;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 15px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            color: white;
+            transition: all 0.3s;
+            text-transform: uppercase;
+        }
+        
+        .btn-play {
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+            box-shadow: 0 4px 15px rgba(78, 205, 196, 0.3);
+        }
+        
+        .btn-stop {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+        }
+        
+        .btn-next {
+            background: linear-gradient(45deg, #ffa726, #ff9800);
+            box-shadow: 0 4px 15px rgba(255, 167, 38, 0.3);
+        }
+        
+        .btn:active {
+            transform: translateY(2px);
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .status {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 1em;
+            backdrop-filter: blur(5px);
+            margin-bottom: 20px;
+        }
+        
+        .playlist {
+            background: rgba(255,255,255,0.05);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .playlist-title {
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            color: #4ecdc4;
+        }
+        
+        .song-list {
+            max-height: 200px;
+            overflow-y: auto;
+            text-align: left;
+        }
+        
+        .song-item {
+            padding: 8px 12px;
+            margin: 5px 0;
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9em;
+        }
+        
+        .song-item:hover {
+            background: rgba(78, 205, 196, 0.2);
+        }
+        
+        .song-item.playing {
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+            color: white;
+        }
+        
+        .footer {
+            margin-top: 20px;
+            opacity: 0.6;
+            font-size: 0.9em;
+        }
+        
+        @media (max-width: 480px) {
+            .title { font-size: 2em; }
+            .logo { font-size: 3em; }
+            .container { padding: 10px; }
+            .controls { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">🎵</div>
+        <div class="title">EZGİ FM</div>
+        <div class="subtitle">Bedava Radyo • 7/24 Yayın</div>
+        
+        <div class="player-card">
+            <div class="current-song" id="currentSong">
+                🎵 Çalmaya hazır
+            </div>
+            
+            <div class="controls">
+                <button class="btn btn-play" id="playBtn">▶ Çal</button>
+                <button class="btn btn-stop" id="stopBtn" disabled>⏹ Dur</button>
+                <button class="btn btn-next" id="nextBtn">⏭ Sonraki</button>
+            </div>
+            
+            <div class="status" id="status">
+                🎧 Müzik seç ve çalmaya başla
+            </div>
+        </div>
+        
+        <div class="playlist">
+            <div class="playlist-title">📻 Playlist</div>
+            <div class="song-list" id="songList">
+                <!-- Şarkılar buraya eklenecek -->
+            </div>
+        </div>
+        
+        <div class="footer">
+            © 2025 Ezgi FM • GitHub Pages ile bedava hosting
+        </div>
+    </div>
+
+    <audio id="audioPlayer" preload="metadata"></audio>
+
+    <script>
+        // Müzik listesi - GitHub'a yüklediğin müziklerin linklerini buraya ekle
+        const playlist = [
+            {
+                title: "Örnek Şarkı 1",
+                url: "music/song1.mp3" // GitHub'daki müzik dosyası yolu
+            },
+            {
+                title: "Örnek Şarkı 2", 
+                url: "music/song2.mp3"
+            },
+            {
+                title: "Örnek Şarkı 3",
+                url: "music/song3.mp3"
+            }
+            // Daha fazla şarkı ekleyebilirsin
+        ];
+
+        let currentSongIndex = 0;
+        let isPlaying = false;
+        let audio = document.getElementById('audioPlayer');
+        
+        const playBtn = document.getElementById('playBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const currentSongEl = document.getElementById('currentSong');
+        const statusEl = document.getElementById('status');
+        const songListEl = document.getElementById('songList');
+
+        // Playlist'i oluştur
+        function createPlaylist() {
+            songListEl.innerHTML = '';
+            playlist.forEach((song, index) => {
+                const songItem = document.createElement('div');
+                songItem.className = 'song-item';
+                songItem.textContent = `${index + 1}. ${song.title}`;
+                songItem.onclick = () => selectSong(index);
+                songListEl.appendChild(songItem);
+            });
+        }
+
+        // Şarkı seç
+        function selectSong(index) {
+            currentSongIndex = index;
+            updateCurrentSong();
+            if (isPlaying) {
+                playSong();
+            }
+        }
+
+        // Mevcut şarkıyı güncelle
+        function updateCurrentSong() {
+            const song = playlist[currentSongIndex];
+            currentSongEl.textContent = `🎵 ${song.title}`;
+            
+            // Playlist'te aktif şarkıyı işaretle
+            document.querySelectorAll('.song-item').forEach((item, index) => {
+                item.classList.toggle('playing', index === currentSongIndex);
+            });
+        }
+
+        // Şarkı çal
+        function playSong() {
+            const song = playlist[currentSongIndex];
+            audio.src = song.url;
+            
+            statusEl.textContent = '🔄 Yükleniyor...';
+            
+            audio.addEventListener('canplay', () => {
+                audio.play();
+                statusEl.textContent = '🎵 Çalıyor';
+                isPlaying = true;
+                playBtn.disabled = true;
+                stopBtn.disabled = false;
+                updateCurrentSong();
+            });
+            
+            audio.addEventListener('error', () => {
+                statusEl.textContent = '❌ Dosya bulunamadı';
+                resetButtons();
+            });
+            
+            audio.addEventListener('ended', () => {
+                nextSong();
+            });
+        }
+
+        // Sonraki şarkı
+        function nextSong() {
+            currentSongIndex = (currentSongIndex + 1) % playlist.length;
+            if (isPlaying) {
+                playSong();
+            } else {
+                updateCurrentSong();
+            }
+        }
+
+        // Butonları sıfırla
+        function resetButtons() {
+            isPlaying = false;
+            playBtn.disabled = false;
+            stopBtn.disabled = true;
+        }
+
+        // Event listeners
+        playBtn.addEventListener('click', () => {
+            playSong();
+        });
+
+        stopBtn.addEventListener('click', () => {
+            audio.pause();
+            audio.currentTime = 0;
+            statusEl.textContent = '⏹ Durduruldu';
+            resetButtons();
+        });
+
+        nextBtn.addEventListener('click', () => {
+            nextSong();
+        });
+
+        // Sayfa yüklendiğinde
+        document.addEventListener('DOMContentLoaded', () => {
+            createPlaylist();
+            updateCurrentSong();
+        });
+    </script>
+</body>
+</html>
