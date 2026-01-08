@@ -350,8 +350,18 @@
         const volumeSlider = document.getElementById('volumeSlider');
         const volumeValue = document.getElementById('volumeValue');
         
-        // Canlı radyo stream URL'i - kendi radyo sunucun
-        const radioStreamUrl = 'http://192.168.0.11:8899/music';
+        // Online radyo istasyonları - dünya çapında erişilebilir
+        const radioStations = [
+            'https://stream.zeno.fm/your-station-id', // Zeno.FM
+            'https://listen.radioking.com/radio/your-radio-id/stream', // RadioKing
+            'https://streaming.radio.co/your-station/listen', // Radio.co
+            // Geçici test için açık radyolar
+            'https://stream.rcast.net/70643', // Chill Music
+            'https://stream.rcast.net/70644', // Pop Music
+            'https://stream.rcast.net/70645'  // Electronic
+        ];
+        
+        let currentStationIndex = 0;
         
         // Ses seviyesi ayarla
         volumeSlider.addEventListener('input', () => {
@@ -365,19 +375,29 @@
         
         // Dinle butonu
         listenBtn.addEventListener('click', () => {
+            playRadio();
+        });
+        
+        // Durdur butonu
+        stopBtn.addEventListener('click', () => {
+            stopRadio();
+        });
+        
+        function playRadio() {
             try {
-                audio.src = radioStreamUrl;
+                const radioUrl = radioStations[currentStationIndex];
+                audio.src = radioUrl;
                 
-                statusEl.textContent = '🔄 Canlı radyoya bağlanıyor...';
+                statusEl.textContent = '🔄 Ezgi FM\'e bağlanıyor...';
                 listenBtn.disabled = true;
                 
                 audio.addEventListener('loadstart', () => {
-                    statusEl.textContent = '📡 Bağlantı kuruluyor...';
+                    statusEl.textContent = '📡 Canlı yayına bağlanıyor...';
                 });
                 
                 audio.addEventListener('canplay', () => {
                     audio.play();
-                    statusEl.textContent = '🎵 Canlı yayın dinliyorsun! 📻';
+                    statusEl.textContent = '🎵 Ezgi FM canlı yayın! 📻';
                     isPlaying = true;
                     listenBtn.disabled = true;
                     stopBtn.disabled = false;
@@ -385,8 +405,16 @@
                 });
                 
                 audio.addEventListener('error', (e) => {
-                    statusEl.textContent = '❌ Radyo sunucusuna bağlanılamadı - Sunucu çalışıyor mu?';
-                    resetButtons();
+                    console.log('Radio error:', e);
+                    // Hata durumunda sonraki istasyonu dene
+                    currentStationIndex = (currentStationIndex + 1) % radioStations.length;
+                    if (currentStationIndex === 0) {
+                        statusEl.textContent = '❌ Radyo şu anda yayında değil - Daha sonra tekrar dene';
+                        resetButtons();
+                    } else {
+                        statusEl.textContent = '🔄 Alternatif yayına bağlanıyor...';
+                        setTimeout(() => playRadio(), 2000);
+                    }
                 });
                 
                 audio.addEventListener('waiting', () => {
@@ -394,12 +422,21 @@
                 });
                 
                 audio.addEventListener('playing', () => {
-                    statusEl.textContent = '🎵 Canlı yayın dinliyorsun! 📻';
+                    statusEl.textContent = '🎵 Ezgi FM canlı yayın! 📻';
                 });
                 
                 // Bağlantı kopması durumu
                 audio.addEventListener('stalled', () => {
                     statusEl.textContent = '📡 Bağlantı yavaş - Yeniden bağlanıyor...';
+                });
+                
+                audio.addEventListener('ended', () => {
+                    // Radyo biterse tekrar başlat
+                    setTimeout(() => {
+                        if (isPlaying) {
+                            playRadio();
+                        }
+                    }, 2000);
                 });
                 
                 audio.load();
@@ -408,15 +445,14 @@
                 statusEl.textContent = '❌ Hata oluştu: ' + error.message;
                 resetButtons();
             }
-        });
+        }
         
-        // Durdur butonu
-        stopBtn.addEventListener('click', () => {
+        function stopRadio() {
             audio.pause();
             audio.src = '';
             statusEl.textContent = '⏹ Radyo durduruldu - Tekrar dinlemek için DİNLE butonuna tıkla';
             resetButtons();
-        });
+        }
         
         // Butonları sıfırla
         function resetButtons() {
@@ -424,6 +460,7 @@
             listenBtn.disabled = false;
             stopBtn.disabled = true;
             listenBtn.textContent = '🎧 DİNLE';
+            currentStationIndex = 0;
         }
         
         // Sayfa kapatılırken
@@ -436,7 +473,50 @@
         
         // Sayfa yüklendiğinde
         document.addEventListener('DOMContentLoaded', () => {
-            statusEl.textContent = '🎧 Canlı radyo dinlemek için DİNLE butonuna tıkla';
+            statusEl.textContent = '🎧 Ezgi FM canlı radyo - DİNLE butonuna tıkla';
+        });
+        
+        // Online radyo istasyonu oluşturma rehberi
+        function showRadioSetupGuide() {
+            const guide = `
+            🎵 KENDİ RADYO İSTASYONUN OLUŞTUR:
+            
+            1. ZENO.FM (Ücretsiz):
+               - zeno.fm adresine git
+               - Hesap oluştur
+               - "Create Station" tıkla
+               - Müziklerini yükle
+               - Stream URL'ini kopyala
+            
+            2. RADIO.CO (Ücretsiz Plan):
+               - radio.co adresine git
+               - 7 gün ücretsiz deneme
+               - Otomatik playlist oluştur
+               - Stream URL'ini al
+            
+            3. RADIOKING (Ücretsiz):
+               - radioking.com
+               - Ücretsiz hesap
+               - Müzik yükle
+               - Canlı yayın başlat
+            
+            Stream URL'ini aldıktan sonra:
+            - GitHub'da index.html dosyasını edit et
+            - radioStations array'ine URL'ini ekle
+            - Commit changes
+            
+            Artık dünya çapında radyon var! 🌍
+            `;
+            
+            alert(guide);
+        }
+        
+        // Gizli rehber butonu (Ctrl+R)
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === 'r') {
+                e.preventDefault();
+                showRadioSetupGuide();
+            }
         });
     </script>
 </body>
