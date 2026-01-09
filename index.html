@@ -462,7 +462,7 @@
         }
         
         // Ezgi FM Radyo Kanalları - Karışık Güvenilir Türk Radyoları
-        // Ezgi FM Radyo Kanalları - Radio.Garden'daki Tüm Türk Radyoları
+        // Ezgi FM Radyo Kanalları - Çalışan Türk Radyoları
         const ezgiChannels = [
             // Test Edilmiş Çalışan Radyolar
             {
@@ -484,7 +484,7 @@
                 originalStation: "Radyo Cem FM 95.5 Erzincan"
             },
             
-            // İstanbul Radyoları (Bilinen ID'ler)
+            // Popüler Türk Radyoları (Test Edilecek)
             {
                 name: "JoyTürk",
                 url: "https://radio.garden/api/ara/content/listen/LcTyJeRx/channel.mp3",
@@ -492,166 +492,28 @@
                 originalStation: "JoyTürk 89.0 FM İstanbul"
             },
             {
-                name: "Radyo Viva",
-                url: "https://radio.garden/api/ara/content/listen/viva-istanbul/channel.mp3",
-                genre: "Türk Pop",
-                originalStation: "Radyo Viva 90.0 FM İstanbul"
-            },
-            {
                 name: "Kral FM",
-                url: "https://radio.garden/api/ara/content/listen/kral-fm-istanbul/channel.mp3",
+                url: "https://radio.garden/api/ara/content/listen/kral-fm/channel.mp3",
                 genre: "Pop Müzik",
                 originalStation: "Kral FM 92.0 FM İstanbul"
             },
             {
                 name: "Super FM",
-                url: "https://radio.garden/api/ara/content/listen/super-fm-istanbul/channel.mp3",
+                url: "https://radio.garden/api/ara/content/listen/super-fm/channel.mp3",
                 genre: "Türk Pop",
                 originalStation: "Super FM 90.8 FM İstanbul"
             },
             {
+                name: "Radyo Viva",
+                url: "https://radio.garden/api/ara/content/listen/radyo-viva/channel.mp3",
+                genre: "Türk Müziği",
+                originalStation: "Radyo Viva 90.0 FM İstanbul"
+            },
+            {
                 name: "Show Radyo",
-                url: "https://radio.garden/api/ara/content/listen/show-radyo-istanbul/channel.mp3",
+                url: "https://radio.garden/api/ara/content/listen/show-radyo/channel.mp3",
                 genre: "Pop & Talk",
                 originalStation: "Show Radyo 89.8 FM İstanbul"
-            },
-            {
-                name: "TRT FM",
-                url: "https://radio.garden/api/ara/content/listen/trt-fm-istanbul/channel.mp3",
-                genre: "Genel Yayın",
-                originalStation: "TRT FM 91.4 FM İstanbul"
-            },
-            {
-                name: "Radyo D",
-                url: "https://radio.garden/api/ara/content/listen/radyo-d-istanbul/channel.mp3",
-                genre: "Klasik Türk",
-                originalStation: "Radyo D İstanbul"
-            },
-            {
-                name: "Kiss FM",
-                url: "https://radio.garden/api/ara/content/listen/kiss-fm-istanbul/channel.mp3",
-                genre: "Variety Music",
-                originalStation: "Kiss FM 91.6 FM İstanbul"
-            },
-            {
-                name: "İstanbulun Sesi",
-                url: "https://radio.garden/api/ara/content/listen/istanbulun-sesi/channel.mp3",
-                genre: "Arabesk",
-                originalStation: "İstanbulun Sesi 91.8 FM"
-            },
-            {
-                name: "Radyo 45'lik",
-                url: "https://radio.garden/api/ara/content/listen/radyo-45lik/channel.mp3",
-                genre: "Nostaljik",
-                originalStation: "Radyo 45'lik 91.2 FM İstanbul"
-            },
-            {
-                name: "Radyo Klasik",
-                url: "https://radio.garden/api/ara/content/listen/radyo-klasik/channel.mp3",
-                genre: "Klasik Müzik",
-                originalStation: "Radyo Klasik 92.2 FM İstanbul"
-            },
-            {
-                name: "A Haber Radyo",
-                url: "https://radio.garden/api/ara/content/listen/a-haber-radyo/channel.mp3",
-                genre: "Haber",
-                originalStation: "A Haber Radyo 90.2 FM İstanbul"
-            },
-            {
-                name: "CNN Türk Radyo",
-                url: "https://radio.garden/api/ara/content/listen/cnn-turk-radyo/channel.mp3",
-                genre: "Haber",
-                originalStation: "CNN Türk Radyo 92.6 FM İstanbul"
-            },
-            {
-                name: "Habertürk Radyo",
-                url: "https://radio.garden/api/ara/content/listen/haberturk-radyo/channel.mp3",
-                genre: "Haber",
-                originalStation: "Habertürk Radyo 90.4 FM İstanbul"
-            },
-            {
-                name: "TRT Radyo Haber",
-                url: "https://radio.garden/api/ara/content/listen/trt-radyo-haber/channel.mp3",
-                genre: "Haber",
-                originalStation: "TRT Radyo Haber 88.8 FM İstanbul"
-            },
-            {
-                name: "Lig Radyo",
-                url: "https://radio.garden/api/ara/content/listen/lig-radyo/channel.mp3",
-                genre: "Spor",
-                originalStation: "Lig Radyo 92.4 FM İstanbul"
-            },
-            {
-                name: "A Spor Radyo",
-                url: "https://radio.garden/api/ara/content/listen/a-spor-radyo/channel.mp3",
-                genre: "Spor",
-                originalStation: "A Spor Radyo 93.0 FM İstanbul"
-            },
-            
-            // Ankara Radyoları
-            {
-                name: "TRT Radyo 1",
-                url: "https://radio.garden/api/ara/content/listen/trt-radyo-1-ankara/channel.mp3",
-                genre: "Genel Yayın",
-                originalStation: "TRT Radyo 1 Ankara"
-            },
-            {
-                name: "Radyo Ankara",
-                url: "https://radio.garden/api/ara/content/listen/radyo-ankara/channel.mp3",
-                genre: "Yerel Yayın",
-                originalStation: "Radyo Ankara"
-            },
-            
-            // İzmir Radyoları
-            {
-                name: "Radyo İzmir",
-                url: "https://radio.garden/api/ara/content/listen/radyo-izmir/channel.mp3",
-                genre: "Yerel Yayın",
-                originalStation: "Radyo İzmir"
-            },
-            {
-                name: "Ege FM",
-                url: "https://radio.garden/api/ara/content/listen/ege-fm-izmir/channel.mp3",
-                genre: "Ege Müziği",
-                originalStation: "Ege FM İzmir"
-            },
-            
-            // Diğer Şehirler
-            {
-                name: "Karadenizin Sesi",
-                url: "https://radio.garden/api/ara/content/listen/karadenizin-sesi/channel.mp3",
-                genre: "Karadeniz Müziği",
-                originalStation: "Karadenizin Sesi 93.4 FM"
-            },
-            {
-                name: "Radyo 7",
-                url: "https://radio.garden/api/ara/content/listen/radyo-7/channel.mp3",
-                genre: "Genel Müzik",
-                originalStation: "Radyo 7"
-            },
-            {
-                name: "Power FM",
-                url: "https://radio.garden/api/ara/content/listen/power-fm/channel.mp3",
-                genre: "Pop & Dance",
-                originalStation: "Power FM"
-            },
-            {
-                name: "Virgin Radio",
-                url: "https://radio.garden/api/ara/content/listen/virgin-radio-turkey/channel.mp3",
-                genre: "Pop & Rock",
-                originalStation: "Virgin Radio Turkey"
-            },
-            {
-                name: "Radyo 2000",
-                url: "https://radio.garden/api/ara/content/listen/radyo-2000/channel.mp3",
-                genre: "Türk Müziği",
-                originalStation: "Radyo 2000 90.6 FM İstanbul"
-            },
-            {
-                name: "Alem FM",
-                url: "https://radio.garden/api/ara/content/listen/alem-fm/channel.mp3",
-                genre: "Karışık",
-                originalStation: "Alem FM 89.2 FM İstanbul"
             }
         ];
         
